@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>com.sample.ssh.apps</groupId>
+   <artifactId>ssh-app</artifactId>
+   <packaging>jar</packaging>
+   <version>6.7.0-SNAPSHOT</version>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <java.version>1.8</java.version>
+      <mvn.frontend.plugin.version>1.6</mvn.frontend.plugin.version>
+      <spring.boot.version>2.0.3.RELEASE</spring.boot.version>
+      <guava.version>20.0</guava.version>
+      <commons.lang3.version>3.7</commons.lang3.version>
+      <mvn.install.plugin.version>2.5.2</mvn.install.plugin.version>
+      <angular.app.root.dir>${project.basedir}/src/main/ui</angular.app.root.dir>
+      <vim25.version>6.7.0</vim25.version>
+      <skip.node.install>false</skip.node.install>
+      <nodejs.unpack.path>${angular.app.root.dir}/node</nodejs.unpack.path>
+   </properties>
+
+   <profiles>
+      <!--Local Node and NPM executables for multi-os build-->
+      <profile>
+         <id>windows</id>
+         <properties>
+            <npm.executable>${nodejs.unpack.path}/npm.cmd</npm.executable>
+            <node.prepended.to.path>${nodejs.unpack.path};${env.PATH}</node.prepended.to.path>
+         </properties>
+         <activation>
+            <os>
+               <family>windows</family>
+            </os>
+         </activation>
+      </profile>
+
+      <profile>
+         <id>linux</id>
+         <properties>
+            <npm.executable>${nodejs.unpack.path}/npm</npm.executable>
+            <node.prepended.to.path>${nodejs.unpack.path}:${env.PATH}</node.prepended.to.path>
+         </properties>
+         <activation>
+            <os>
+               <family>unix</family>
+            </os>
+         </activation>
+      </profile>
+
+      <profile>
+         <id>mac</id>
+         <properties>
+            <npm.executable>${nodejs.unpack.path}/npm</npm.executable>
+            <node.prepended.to.path>${nodejs.unpack.path}:${env.PATH}</node.prepended.to.path>
+         </properties>
+         <activation>
+            <os>
+               <family>mac</family>
+            </os>
+         </activation>
+      </profile>
+   </profiles>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>${spring.boot.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <dependencies>
+      <!-- Spring Dependencies -->
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-devtools</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>httpclient</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-lang3</artifactId>
+         <version>${commons.lang3.version}</version>
+      </dependency>
+
+      <!--vim25 should be installed in the local repo prior to the-->
+      <!--dependency resolution phase.-->
+      <dependency>
+         <groupId>com.vmware.vim25</groupId>
+         <artifactId>vim25</artifactId>
+         <version>${vim25.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>com.jcraft</groupId>
+         <artifactId>jsch</artifactId>
+         <version>0.1.55</version>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <!--Install vim25 to the local repository. Bound to the validate phase.-->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>install-external-dependencies</id>
+                  <phase>validate</phase>
+                  <goals>
+                     <goal>install-file</goal>
+                  </goals>
+                  <configuration>
+                     <file>${project.basedir}/libs/vim25.jar</file>
+                     <groupId>com.vmware.vim25</groupId>
+                     <artifactId>vim25</artifactId>
+                     <version>${vim25.version}</version>
+                     <packaging>jar</packaging>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!--Download and install NodeJS and NPM-->
+         <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>${mvn.frontend.plugin.version}</version>
+            <executions>
+               <!--Locally install Node and NPM-->
+               <execution>
+                  <id>Download NodeJS and NPM.</id>
+                  <goals>
+                     <goal>install-node-and-npm</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <nodeVersion>v8.11.1</nodeVersion>
+                     <npmVersion>5.6.0</npmVersion>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <skip>${skip.node.install}</skip>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!--Exec Maven Plugin to execute 'npm install' and 'npm run build'-->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+               <!--Install package.json dependencies-->
+               <execution>
+                  <id>Run npm install.</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <configuration>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <environmentVariables>
+                        <PATH>${node.prepended.to.path}</PATH>
+                     </environmentVariables>
+                     <executable>${npm.executable}</executable>
+                     <arguments>
+                        <argument>install</argument>
+                     </arguments>
+                  </configuration>
+               </execution>
+               <!--Build the Angular App-->
+               <execution>
+                  <id>Build the Angular App.</id>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <environmentVariables>
+                        <PATH>${node.prepended.to.path}</PATH>
+                     </environmentVariables>
+                     <executable>${npm.executable}</executable>
+                     <arguments>
+                        <argument>run</argument>
+                        <argument>build</argument>
+                     </arguments>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>Analyze Maven Dependencies.</id>
+                  <configuration>
+                     <ignoreNonCompile>true</ignoreNonCompile>
+                     <failOnWarning>false</failOnWarning>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${spring.boot.version}</version>
+            <executions>
+               <execution>
+                  <id>Build an executable Spring Boot jar.</id>
+                  <phase>install</phase>
+                  <goals>
+                     <goal>repackage</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <configuration>
+               <excludeDefaultDirectories>true</excludeDefaultDirectories>
+               <filesets>
+                  <fileset>
+                     <directory>target</directory>
+                     <excludes>
+                        <exclude>**/classes/ui/**</exclude>
+                     </excludes>
+                  </fileset>
+               </filesets>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>${java.version}</source>
+               <target>${java.version}</target>
+            </configuration>
+         </plugin>
+
+      </plugins>
+   </build>
+
+</project>

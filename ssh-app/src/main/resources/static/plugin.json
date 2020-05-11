@@ -1,0 +1,141 @@
+{
+   "manifestVersion": "1.0.0",
+   "requirements": {
+      "plugin.api.version": "1.0.0"
+   },
+   "configuration": {
+      "nameKey": "plugin.name",
+      "icon": {
+         "name": "main"
+      }
+   },
+   "global": {
+      "view": {
+         "uri": "index.html?view=entry-point",
+         "navigationVisible": false
+      }
+   },
+   "objects": {
+      "VirtualMachine": {
+         "summary": {
+            "view": {
+               "uri": "index.html?view=vm-portlet"
+            }
+         },
+         "monitor": {
+            "views": [
+               {
+                  "navigationId": "vmMonitor",
+                  "labelKey": "vm.monitor.view.title",
+                  "uri": "index.html?view=vm-monitor"
+               }
+            ]
+         },
+         "configure": {
+            "views": [
+               {
+                  "labelKey": "vm.configure.view.title",
+                  "uri": "index.html?view=vm-configure"
+               }
+            ]
+         },
+         "menu": {
+            "actions": [
+               {
+                  "labelKey": "vm.action.label",
+                  "icon": {
+                     "name": "action-1"
+                  },
+                  "trigger": {
+                     "type": "modal",
+                     "uri": "index.html?view=vm-action-modal",
+                     "titleKey": "vm.action.modal.title",
+                     "size": {
+                        "width": 600,
+                        "height": 250
+                     }
+                  }
+               }
+            ]
+         }
+      },
+      "HostSystem": {
+         "summary": {
+            "view": {
+               "uri": "index.html?view=host-summary"
+            }
+         },
+         "monitor": {
+            "views": [
+               {
+                  "navigationId": "hostMonitor",
+                  "labelKey": "host.monitor.view.title",
+                  "uri": "index.html?view=host-monitor"
+               }
+            ]
+         }
+      }
+   },
+   "definitions": {
+      "iconSpriteSheet": {
+         "uri": "assets/images/sprites.png",
+         "definitions": {
+            "list": {
+               "x": 0,
+               "y": 64
+            },
+            "main": {
+               "x": 0,
+               "y": 96
+            },
+            "action-1": {
+               "x": 0,
+               "y": 0
+            },
+            "action-2": {
+               "x": 0,
+               "y": 32
+            }
+         }
+      },
+      "i18n": {
+         "locales": [
+            "en-US",
+            "de-DE",
+            "fr-FR"
+         ],
+         "definitions": {
+            "plugin.name": {
+               "en-US": "SSH app",
+               "de-DE": "SSH app",
+               "fr-FR": "SSH app"
+            },
+            "vm.action.label": {
+               "en-US": "UI action",
+               "de-DE": "UI Aktion",
+               "fr-FR": "UI action"
+            },
+            "vm.action.modal.title": {
+               "en-US": "Action Title",
+               "de-DE": "Aktion Titel",
+               "fr-FR": "Action Title"
+            },
+            "vm.monitor.view.title": {
+               "en-US": "HTML Sample Monitor View",
+               "de-DE": "HTML Sample Monitoransicht",
+               "fr-FR": "HTML Sample Vue du Moniteur"
+            },
+            "vm.configure.view.title": {
+               "en-US": "HTML Sample Configure View",
+               "de-DE": "HTML Sample Konfigurierenansicht",
+               "fr-FR": "HTML Sample Vue du Configurer"
+            },
+            "host.monitor.view.title": {
+               "en-US": "Related Chassis",
+               "de-DE": "Verwandte Chassis",
+               "fr-FR": "Châssis Connexe"
+            }
+         }
+      }
+   }
+}

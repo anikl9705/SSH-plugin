@@ -1,0 +1,69 @@
+<!-- Copyright (c) 2018 VMware, Inc. All rights reserved. -->
+<div class="viewTitle">{{ 'common.execute1' | translate }}</div>
+
+<div class="clr-row">
+    <clr-stack-view>
+        <clr-stack-block>
+            <clr-stack-label>{{ 'actions.executecmd' | translate }}</clr-stack-label>
+            <clr-stack-content>
+            <span>
+            <input type="text" [(ngModel)]="command"/>
+                </span>
+            </clr-stack-content>
+        </clr-stack-block>
+    </clr-stack-view>
+</div>
+
+<div class="clr-row text-center">
+    <button class="btn btn-sm" (click)="onExecute()">{{ 'common.run' | translate }}</button>
+</div>
+
+<div class="clr-row">
+    <div class="alert alert-success" *ngIf="showSuccessMessage">
+        <div class="alert-items">
+            <div class="alert-item static">
+                <div class="alert-icon-wrapper">
+                    <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+                </div>
+                <span class="alert-text">
+                {{'actions.executionsuccess'| translate}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-warning" *ngIf="showFailMessage">
+        <div class="alert-items">
+            <div class="alert-item static">
+                <div class="alert-icon-wrapper">
+                    <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+                </div>
+                <span class="alert-text">
+                {{'actions.executionfail'| translate}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clr-row" *ngIf="showSuccessMessage">
+    <h3>{{command}}</h3>
+</div>
+
+<div class="clr-row" *ngIf="showSuccessMessage">
+    <p style="white-space: pre-line;">{{result}}</p>
+</div>
+
+
+
+<!--<div class="alert alert-success" *ngIf="showSuccessMessage">-->
+<!--    <div class="alert-items">-->
+<!--        <div class="alert-item static">-->
+<!--            <div class="alert-icon-wrapper">-->
+<!--                <clr-icon class="alert-icon" shape="check-circle"></clr-icon>-->
+<!--            </div>-->
+<!--            <span class="alert-text">-->
+<!--                {{ 'settings.theNumberOfDisplayedChassisPerPage' | translate }}-->
+<!--                '{{hostname}}' {{ 'settings.wasUpdatedInTheWebLocalStorage' | translate }}.-->
+<!--            </span>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->

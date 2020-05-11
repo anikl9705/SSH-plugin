@@ -1,0 +1,24 @@
+<div class="viewTitle">{{ 'logs.title' | translate }}</div>
+
+
+<div style="direction: rtl">
+    <button class="btn btn-sm" (click)="onRefresh()">{{ 'common.refresh' | translate }}</button>
+</div>
+
+<div class="alert alert-success" *ngIf="showSuccessPage">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+            </div>
+            <span class="alert-text">
+                {{ 'logs.updated' | translate }}
+                '{{time | date: 'medium'}}'.
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="clr-row" *ngIf="showSuccessPage" style="max-height: 500px; overflow: scroll;">
+    <p style="white-space: pre-line;">{{logData}}</p>
+</div>

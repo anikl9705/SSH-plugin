@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+   <mvc:annotation-driven>
+      <mvc:message-converters>
+         <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+      </mvc:message-converters>
+   </mvc:annotation-driven>
+
+   <bean name="chassisStore" class="com.sample.app.ssh.store.InMemoryChassisStore"/>
+
+   <bean name="configuration"
+         class="com.sample.app.ssh.configuration.Configuration"
+         init-method="initialize">
+      <constructor-arg index="0" ref="environment"/>
+   </bean>
+
+   <bean name="sessionService"
+         class="com.sample.app.ssh.gateway.SessionServiceImpl">
+      <constructor-arg index="0" ref="configuration"/>
+   </bean>
+
+   <bean name="chassisService"
+         class="com.sample.app.ssh.services.ChassisServiceImpl">
+      <constructor-arg index="0" ref="chassisStore"/>
+   </bean>
+
+   <bean name="sshService" class="com.sample.app.ssh.services.SSHServiceImpl"/>
+
+   <bean name="vcenterInfoService"
+         class="com.sample.app.ssh.services.HostServiceImpl">
+      <constructor-arg index="0" ref="vimObjectService"/>
+      <constructor-arg index="1" ref="chassisService"/>
+   </bean>
+
+   <bean name="vimObjectService"
+         class="com.sample.app.ssh.vim25.services.VimObjectService">
+      <constructor-arg index="0" ref="sessionService"/>
+      <constructor-arg index="1" ref="configuration"/>
+   </bean>
+
+   <bean name="chassisController"
+         class="com.sample.app.ssh.controllers.ChassisController">
+      <constructor-arg index="0" ref="chassisService"/>
+   </bean>
+
+<!--   <bean name="sshController" class="com.sample.app.ssh.controllers.SSHController">-->
+<!--      <constructor-arg index="0" ref="sshService"/>-->
+<!--   </bean>-->
+
+   <bean name="hostController"
+         class="com.sample.app.ssh.controllers.HostController">
+      <constructor-arg index="0" ref="vcenterInfoService"/>
+      <constructor-arg index="1" ref="chassisService"/>
+   </bean>
+
+</beans>

@@ -1,0 +1,50 @@
+<!-- Copyright (c) 2018 VMware, Inc. All rights reserved. -->
+<div class="viewTitle">{{ 'common.settings' | translate }}</div>
+
+<div class="alert alert-success" *ngIf="showSuccessMessage">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+            </div>
+            <span class="alert-text">
+                {{ 'settings.updatedUserSettingsInServer' | translate }}
+                '{{hostname}}'.
+            </span>
+        </div>
+    </div>
+</div>
+<div style="direction: rtl">
+    <button class="btn btn-sm" (click)="onUpdate()">
+        <span *ngIf="isAvailable == true">{{'common.update' | translate }}</span>
+        <span *ngIf="isAvailable == false">{{'common.set' | translate }}</span>
+    </button>
+</div>
+<clr-stack-view>
+    <clr-stack-block>
+        <clr-stack-label>{{ 'settings.username' | translate }}</clr-stack-label>
+        <clr-stack-content>
+            <span>
+            <input type="text" [(ngModel)]="username"/>
+                </span>
+        </clr-stack-content>
+    </clr-stack-block>
+
+    <clr-stack-block>
+        <clr-stack-label>{{ 'settings.password' | translate }}</clr-stack-label>
+        <clr-stack-content>
+            <span>
+            <input type="password" [(ngModel)]="password"/>
+                </span>
+        </clr-stack-content>
+    </clr-stack-block>
+
+    <clr-stack-block>
+        <clr-stack-label>{{ 'settings.hostname' | translate }}</clr-stack-label>
+        <clr-stack-content>
+            <span>
+            <input type="text" [(ngModel)]="hostname"/>
+                </span>
+        </clr-stack-content>
+    </clr-stack-block>
+</clr-stack-view>
